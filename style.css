@@ -1,20 +1,17 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Roboto+Mono:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap');
 
 :root {
-    --branco: #ffffff;
-    --cor-de-fundo: #020b14; /* Um tom "quase preto" azulado bem moderno */
-    --fundo-senha: #0a192f;
-    --fundo-texto: #0f223d;
-    --borda: #0075ff;
-    --borda-foco: #64ffda; /* Um detalhe ciano/neon para dar contraste moderno */
+    --bg-principal: #030712;
+    --bg-card: #0b1329;
+    --bg-input: #111c44;
+    --azul-neon: #0072ff;
+    --texto-principal: #f3f4f6;
+    --texto-mutado: #9ca3af;
     
-    /* Cores para a barra de segurança (graduações de azul/ciano) */
-    --seguranca-fraca: #ff4a4a; /* Vermelho padrão para fraca, ou use #003366 se quiser 100% azul */
-    --seguranca-media: #0055ff;
-    --seguranca-forte: #00ffcc;
-    
-    --roboto: 'Roboto', sans-serif;
-    --roboto-mono: 'Roboto Mono', monospace;
+    /* Estados da Barra */
+    --cor-fraca: #ef4444;
+    --cor-media: #3b82f6;
+    --cor-forte: #10b981;
 }
 
 * {
@@ -24,162 +21,203 @@
 }
 
 body {
-    color: var(--branco);
-    background-color: var(--cor-de-fundo);
-    font-family: var(--roboto);
-    -webkit-font-smoothing: antialiased;
-    padding: 20px;
+    background-color: var(--bg-principal);
+    color: var(--texto-principal);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
 }
 
 .conteudo {
-    max-width: 800px; /* Reduzi para o container ficar mais centralizado e elegante */
-    margin: 0 auto;
+    width: 100%;
+    max-width: 600px;
 }
 
 .conteudo-titulo {
     text-align: center;
-    margin: 60px 0 40px 0;
+    margin-bottom: 32px;
 }
 
 .titulo-principal {
-    font-family: var(--roboto-mono);
-    font-size: 2.5rem;
+    font-size: 2.25rem;
     font-weight: 700;
-    letter-spacing: -1px;
-    margin-bottom: 10px;
-    background: linear-gradient(45deg, #ffffff, var(--borda));
+    letter-spacing: -0.05em;
+    margin-bottom: 8px;
+    background: linear-gradient(to right, #fff, var(--azul-neon));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
 .titulo-secundario {
-    font-size: 1.1rem;
-    color: #8892b0; /* Texto secundário levemente acinzentado */
+    font-size: 0.95rem;
+    color: var(--texto-mutado);
 }
 
-/* Container da Senha - Estilo Card Moderno */
+/* Card Superior (Senha e Barra) */
 .conteudo-senha {
-    background: var(--fundo-senha);
-    padding: 32px;
-    border-radius: 16px;
-    border: 1px solid rgba(0, 117, 255, 0.2);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    margin-bottom: 32px;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
+    background-color: var(--bg-card);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    margin-bottom: 24px;
+}
+
+.input-container {
+    width: 100%;
+    margin-bottom: 16px;
 }
 
 #campo-senha {
-    background-color: rgba(15, 34, 61, 0.5);
-    border: 2px solid rgba(0, 117, 255, 0.3);
-    border-radius: 8px;
-    color: var(--branco);
-    font-family: var(--roboto-mono);
-    font-size: 2rem;
-    padding: 16px;
     width: 100%;
+    background-color: var(--bg-input);
+    border: 2px solid rgba(0, 114, 255, 0.2);
+    border-radius: 12px;
+    color: #fff;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.75rem;
+    padding: 16px;
     text-align: center;
     transition: all 0.3s ease;
 }
 
 #campo-senha:focus {
     outline: none;
-    border-color: var(--borda);
-    box-shadow: 0 0 15px rgba(0, 117, 255, 0.4);
+    border-color: var(--azul-neon);
+    box-shadow: 0 0 20px rgba(0, 114, 255, 0.3);
 }
 
-/* ==========================================
-   NOVO: BARRA DE SEGURANÇA DA SENHA
-========================================== */
+/* CONTAINER DA BARRA DE SEGURANÇA */
 .barra-seguranca-container {
     width: 100%;
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(255, 255, 255, 0.05);
     height: 8px;
-    border-radius: 4px;
+    border-radius: 99px;
     overflow: hidden;
-    margin-top: 8px;
+    margin-bottom: 12px;
 }
 
 .barra-seguranca {
     height: 100%;
-    width: 0%; /* Alterado via JavaScript dinamicamente (ex: 30%, 60%, 100%) */
-    background-color: var(--seguranca-fraca);
-    transition: width 0.4s ease, background-color 0.4s ease;
+    width: 0%; /* Alterado dinamicamente pelo JS */
+    border-radius: 99px;
+    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s ease;
 }
 
-/* Classes utilitárias para mudar a cor da barra via JS */
-.barra-seguranca.fraca { width: 33%; background-color: var(--seguranca-fraca); }
-.barra-seguranca.media { width: 66%; background-color: var(--seguranca-media); }
-.barra-seguranca.forte { width: 100%; background-color: var(--seguranca-forte); }
+.entropia {
+    font-size: 0.85rem;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--texto-mutado);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
 
-/* ========================================== */
-
+/* Card Inferior (Configurações) */
 .parametro {
-    background-color: var(--fundo-texto);
-    border: 1px solid rgba(0, 117, 255, 0.2);
-    border-radius: 16px;
+    background-color: var(--bg-card);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
     padding: 32px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
 }
 
 .parametro-titulo {
-    font-family: var(--roboto-mono);
-    font-size: 1.5rem;
+    font-size: 1.1rem;
     font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--azul-neon);
     margin-bottom: 24px;
-    color: var(--borda);
 }
 
 .parametro-coluna__senha {
     display: flex;
     flex-direction: column;
-    gap: 20px;
-}
-
-.parametro-senha {
-    width: 100%;
+    gap: 32px;
 }
 
 .parametro-senha__titulo {
-    font-size: 1.1rem;
-    margin-bottom: 16px;
-    color: #ccd6f6;
+    font-size: 0.95rem;
+    color: var(--texto-principal);
+    margin-bottom: 12px;
+    font-weight: 500;
 }
 
-/* Botões Modernos */
+/* Botões do Contador (+ / -) */
 .parametro-senha-botoes {
     display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
+    align-items: center;
+    background-color: var(--bg-input);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 6px;
+    width: fit-content;
 }
 
 .parametro-senha__botao {
-    background: linear-gradient(135deg, var(--borda), #0052b4);
-    color: white;
-    border: none;
-    padding: 12px 24px;
-    font-family: var(--roboto);
-    font-weight: 500;
+    background: rgba(255, 255, 255, 0.03);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    width: 40px;
+    height: 40px;
+    font-size: 1.25rem;
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.2s ease;
 }
 
 .parametro-senha__botao:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0, 117, 255, 0.4);
+    background-color: var(--azul-neon);
+    border-color: var(--azul-neon);
+    box-shadow: 0 0 12px rgba(0, 114, 255, 0.4);
 }
 
-.parametro-senha__botao:active {
-    transform: translateY(0);
+.parametro-senha__texto {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.25rem;
+    font-weight: 700;
+    min-width: 50px;
+    text-align: center;
 }
 
-@media screen and (min-width: 768px) {
+/* Lista de Checkboxes */
+.checkbox-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.95rem;
+    color: var(--texto-mutado);
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.checkbox-label:hover {
+    color: #fff;
+}
+
+.checkbox-opcao {
+    accent-color: var(--azul-neon);
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+/* Responsividade Básica */
+@media screen and (min-width: 600px) {
     .parametro-coluna__senha {
         flex-direction: row;
+        justify-content: space-between;
     }
     .parametro-senha {
-        width: 50%;
+        flex: 1;
     }
 }
