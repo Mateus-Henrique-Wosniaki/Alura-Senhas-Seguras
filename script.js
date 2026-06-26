@@ -1,89 +1,97 @@
-// 1. Selecionar os elementos do HTML
-const campoSenha = document.querySelector('#campo-senha');
-const tamanhoTexto = document.querySelector('.parametro-senha__texto');
-const btnMenos = document.querySelectorAll('.parametro-senha__botao')[0];
-const btnMais = document.querySelectorAll('.parametro-senha__botao')[1];
-const checkboxes = document.querySelectorAll('.checkbox');
-const barraIndicador = document.querySelector('#barra-indicador');
-const textoEntropia = document.querySelector('.entropia');
+document.addEventListener("DOMContentLoaded", () => {
+    // Seleção correta por IDs e classes únicas
+    const campoSenha = document.getElementById('campo-senha');
+    const tamanhoTexto = document.getElementById('tamanho-texto');
+    const btnMenos = document.getElementById('btn-menos');
+    const btnMais = document.getElementById('btn-mais');
+    const checkboxes = document.querySelectorAll('.checkbox-opcao');
+    const barraIndicador = document.getElementById('barra-indicador');
+    const textoForca = document.getElementById('texto-forca');
 
-// Bancos de caracteres
-const letrasMaiusculas = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-const letrasMinusculas = "abcdefghijklmnopqrstuvwxyz";
-const numeros = "0123456789";
-const simbolos = "!@#$%^&*()_+~`|}{[]:;?><,./-=";
+    // Grupos de caracteres
+    const conjuntos = [
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZ", // Maiúsculas
+        "abcdefghijklmnopqrstuvwxyz", // Minúsculas
+        "0123456789",                 // Números
+        "!@#$%^&*()_+~`|}{[]:;?><,./-=" // Símbolos
+    ];
 
-let tamanhoSenha = 12;
+    let tamanhoSenha = 12;
 
-// 2. Controlar os botões de + e -
-btnMais.addEventListener('click', () => {
-    tamanhoSenha++;
-    tamanhoTexto.textContent = tamanhoSenha;
-    gerarEAtualizarSenha();
+    // Controladores de tamanho
+    btnMais.addEventListener('click', () => {
+        if (tamanhoSenha < 32) {
+            tamanhoSenha++;
+            tamanhoTexto.textContent = tamanhoSenha;
+            gerarSenha();
+        }
+    });
+
+    btnMenos.addEventListener('click', () => {
+        if (tamanhoSenha > 4) {
+            tamanhoSenha--;
+            tamanhoTexto.textContent = tamanhoSenha;
+            gerarSenha();
+        }
+    });
+
+    // Função que cria a string aleatória
+    function gerarSenha() {
+        let poolDeCaracteres = "";
+        let tiposAtivos = 0;
+
+        // Mapeia quais caixas estão marcadas
+        checkboxes.forEach((box, index) => {
+            if (box.checked) {
+                poolDeCaracteres += conjuntos[index];
+                tiposAtivos++;
+            }
+        });
+
+        // Caso nenhuma caixa esteja marcada
+        if (poolDeCaracteres === "" || tamanhoSenha === 0) {
+            campoSenha.value = "";
+            atualizarBarra(0, "Selecione uma opção");
+            return;
+        }
+
+        let resultado = "";
+        for (let i = 0; i < tamanhoSenha; i++) {
+            const indexAleatorio = Math.floor(Math.random() * poolDeCaracteres.length);
+            resultado += poolDeCaracteres[indexAleatorio];
+        }
+
+        campoSenha.value = resultado;
+        
+        // Avalia a força com base nos critérios escolhidos
+        avaliarForca(tamanhoSenha, tiposAtivos);
+    }
+
+    // Calcula a largura e a cor da barra
+    function avaliarForca(tamanho, tipos) {
+        const pontuacao = tamanho * tipos;
+
+        if (pontuacao < 20) {
+            atualizarBarra(33, "Fraca 🔴", "var(--cor-fraca)");
+        } else if (pontuacao >= 20 && pontuacao < 40) {
+            atualizarBarra(66, "Moderada 🔵", "var(--cor-media)");
+        } else {
+            atualizarBarra(100, "Excelente! 🟢", "var(--cor-forte)");
+        }
+    }
+
+    // Aplica as alterações de estilo inline de forma limpa
+    function atualizarBarra(porcentagem, mensagem, cor) {
+        barraIndicador.style.width = `${porcentagem}%`;
+        barraIndicador.style.backgroundColor = cor || "transparent";
+        textoForca.textContent = `Força: ${mensagem}`;
+    }
+
+    // Adiciona evento de mudança a cada checkbox
+    checkboxes.forEach(box => {
+        box.addEventListener('change', gerarSenha);
+    });
+
+    // Inicia gerando a primeira senha padrão
+    gerarSenha();
 });
-
-btnMenos.addEventListener('click', () => {
-    if (tamanhoSenha > 4) { // Evita senhas menores que 4
-        tamanhoSenha--;
-        tamanhoTexto.textContent = tamanhoSenha;
-        gerarEAtualizarSenha();
-    }
-});
-
-// 3. Função principal para gerar a senha e medir a força
-function gerarEAtualizarSenha() {
-    let caracteresPermitidos = "";
-    let tiposSelecionados = 0;
-
-    // Verifica o que o usuário marcou
-    if (checkboxes[0].checked) { caracteresPermitidos += letrasMaiusculas; tiposSelecionados++; }
-    if (checkboxes[1].checked) { caracteresPermitidos += letrasMinusculas; tiposSelecionados++; }
-    if (checkboxes[2].checked) { caracteresPermitidos += numeros; tiposSelecionados++; }
-    if (checkboxes[3].checked) { caracteresPermitidos += simbolos; tiposSelecionados++; }
-
-    // Se nada estiver marcado, limpa o campo
-    if (caracteresPermitidos === "") {
-        campoSenha.value = "";
-        atualizarBarraVisual(0);
-        return;
-    }
-
-    // Gera a senha aleatória
-    let senhaGerada = "";
-    for (let i = 0; i < tamanhoSenha; i++) {
-        const indiceAleatorio = Math.floor(Math.random() * caracteresPermitidos.length);
-        senhaGerada += caracteresPermitidos[indiceAleatorio];
-    }
-
-    campoSenha.value = senhaGerada;
-
-    // Lógica para medir a força (Baseada no tamanho e variedade)
-    let pontuacao = tamanhoSenha * tiposSelecionados;
-
-    if (pontuacao < 20) {
-        atualizarBarraVisual("fraca", "Senha Fraca 🔴");
-    } else if (pontuacao >= 20 && pontuacao < 40) {
-        atualizarBarraVisual("media", "Senha Moderada 🔵");
-    } else {
-        atualizarBarraVisual("forte", "Senha Excelente! 🟢");
-    }
-}
-
-// 4. Função que muda as classes do CSS que criamos
-function atualizarBarraVisual(classe, texto) {
-    // Reseta as classes antigas
-    barraIndicador.className = "barra-seguranca"; 
-    
-    if (classe) {
-        barraIndicador.classList.add(classe);
-        textoEntropia.textContent = texto;
-    } else {
-        textoEntropia.textContent = "Selecione pelo menos uma opção";
-    }
-}
-
-// Escutar mudanças nos checkboxes para gerar uma senha nova automaticamente
-checkboxes.forEach(checkbox => checkbox.addEventListener('change', gerarEAtualizarSenha));
-
-// Gera uma senha assim que a página carrega
-gerarEAtualizarSenha();
